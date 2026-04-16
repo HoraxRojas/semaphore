@@ -2,7 +2,7 @@
   hosts: oracle_servers
   gather_facts: false
   tasks:
-
-    - name: ping
-      shell: ping -c 1 -w 2 8.8.8.8
-      ignore_errors: true
+    - name: Run a command that uses non-posix shell-isms (in this example /bin/sh doesn't handle redirection and wildcards together but bash does)
+      ansible.builtin.raw: ps -fea|grep smon
+      args:
+      executable: /bin/bash
