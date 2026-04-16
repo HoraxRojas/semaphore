@@ -21,3 +21,6 @@
     - name: Set OS family fact
       ansible.builtin.set_fact:
         detected_os: "{{ os_family.stdout | trim }}"
+
+    - debug:
+        msg: "{{ detected_os }}"
