@@ -2,7 +2,22 @@
   hosts: oracle_servers
   gather_facts: false
   tasks:
-    - name: Run ps command
-      ansible.builtin.raw: ps -fea
-      args:
-      executable: /bin/bash
+    - name: Detect OS family
+      ansible.builtin.raw: |
+        if [ -f /etc/debian_version ]; then
+          echo "DEBIAN"
+        elif [ -f /etc/redhat-release ]; then
+          echo "REDHAT"
+        elif [ -f /etc/alpine-release ]; then
+          echo "ALPINE"
+        elif [ -f /etc/SuSE-release ] || [ -f /etc/SUSE-brand ]; then
+          echo "SUSE"
+        else
+          echo "UNKNOWN"
+        fi
+      register: os_family
+      changed_when: false
+
+    - name: Set OS family fact
+      ansible.builtin.set_fact:
+        detected_os: "{{ os_family.stdout | trim }}"
